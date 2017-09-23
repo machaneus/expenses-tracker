@@ -1,0 +1,33 @@
+{
+  "name": "expenses-tracker",
+  "version": "1.0.0",
+  "description": "An judgemental expenses tracker",
+  "main": "server.js",
+  "scripts": {
+    "test-backend": "NODE_ENV=test ./node_modules/mocha/bin/mocha \"./src/server/**/*.spec.js\""
+  },
+  "author": "machaneus",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.7.2",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "karma": "^1.7.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-spec-reporter": "0.0.31",
+    "mocha": "^3.5.3",
+    "nodemon": "^1.12.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "bower": "^1.8.2",
+    "express": "^4.15.4",
+    "jasmine": "^2.8.0",
+    "morgan": "^1.8.2"
+  }
+}
