@@ -1,19 +1,19 @@
 function expenseController (ExpenseModel) {
   let post = function post (req, res) {
     let expense = new ExpenseModel(req.body);
-    if (!req.value) {
+    if (!req.body.value) {
       res.status(400);
       res.send('Value field is required');
     }
-    if (!req.category) {
+    if (!req.body.category) {
       res.status(400);
       res.send('Category field is required');
     }
-    if (!req.necessity) {
+    if (!req.body.necessity) {
       res.status(400);
       res.send('Necessity field is required');
     }
-    if (!req.timestamp) {
+    if (!req.body.timestamp) {
       res.status(400);
       res.send('Timestamp field is required');
     } else {

@@ -7,9 +7,18 @@ describe('Expense entry controller tests:', () => {
   let controller;
   let req;
   let res;
+  let spySave;
+  let spyExpenseModel;
 
   beforeEach(() => {
-    ExpenseModel = function (obj) {};
+    spySave = sinon.spy();
+    spyExpenseModel = sinon.spy();
+    ExpenseModel = function (obj) {
+      spyExpenseModel(obj);
+      this.save = function () {
+        spySave();
+      };
+    };
     controller = require('../../src/controllers/expense')(ExpenseModel);
     res = {
       status: sinon.spy(),
@@ -74,8 +83,30 @@ describe('Expense entry controller tests:', () => {
       res.status.calledWith(400).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
       res.send.calledWith('Timestamp field is required').should.equal(true);
     });
-    it('Should call .save() on a correct POST ');
-    it('Should return status 201 on a correct POST');
+    it('Should call .save() on a correct POST ', () => {
+      req = {};
+      req.body = {
+        'value': 34.09,
+        'necessity': 'low',
+        'category': 'food',
+        'timestamp': 1506200350770
+      };
+      controller.post(req, res);
+      spySave.called.should.equal(true);
+      spyExpenseModel.calledWith(req.body).should.equal(true);
+    });
+    it('Should return status 201 on a correct POST', () => {
+      req = {};
+      req.body = {
+        'value': 34.09,
+        'necessity': 'low',
+        'category': 'food',
+        'timestamp': 1506200350770
+      };
+      controller.post(req, res);
+      res.status.calledWith(201).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
+      res.send.calledWith('Expense entry saved').should.equal(true, 'Bad message ' + res.send.args[0][0]);
+    });
   });
   describe('expense entries GET', () => {
     it('Should have a get method', () => {
