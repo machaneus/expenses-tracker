@@ -43,6 +43,7 @@ describe('Expense entry controller tests:', () => {
 
       res.status.calledWith(400).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
       res.send.calledWith('Value field is required').should.equal(true);
+      res.send.calledOnce.should.equal(true);
     });
     it('Should not allow a POST without a necessity field', () => {
       req = {};
@@ -56,6 +57,7 @@ describe('Expense entry controller tests:', () => {
 
       res.status.calledWith(400).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
       res.send.calledWith('Necessity field is required').should.equal(true);
+      res.send.calledOnce.should.equal(true);
     });
     it('Should not allow a POST without a category field', () => {
       req = {};
@@ -69,6 +71,7 @@ describe('Expense entry controller tests:', () => {
 
       res.status.calledWith(400).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
       res.send.calledWith('Category field is required').should.equal(true);
+      res.send.calledOnce.should.equal(true);
     });
     it('Should not allow a POST without a timestamp field', () => {
       req = {};
@@ -82,6 +85,7 @@ describe('Expense entry controller tests:', () => {
 
       res.status.calledWith(400).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
       res.send.calledWith('Timestamp field is required').should.equal(true);
+      res.send.calledOnce.should.equal(true);
     });
     it('Should call .save() on a correct POST ', () => {
       req = {};
@@ -94,6 +98,7 @@ describe('Expense entry controller tests:', () => {
       controller.post(req, res);
       spySave.called.should.equal(true);
       spyExpenseModel.calledWith(req.body).should.equal(true);
+      res.send.calledOnce.should.equal(true);
     });
     it('Should return status 201 on a correct POST', () => {
       req = {};
@@ -106,6 +111,7 @@ describe('Expense entry controller tests:', () => {
       controller.post(req, res);
       res.status.calledWith(201).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
       res.send.calledWith('Expense entry saved').should.equal(true, 'Bad message ' + res.send.args[0][0]);
+      res.send.calledOnce.should.equal(true);
     });
   });
   describe('expense entries GET', () => {

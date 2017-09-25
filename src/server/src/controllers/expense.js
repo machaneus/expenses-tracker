@@ -4,16 +4,13 @@ function expenseController (ExpenseModel) {
     if (!req.body.value) {
       res.status(400);
       res.send('Value field is required');
-    }
-    if (!req.body.category) {
+    } else if (!req.body.category) {
       res.status(400);
       res.send('Category field is required');
-    }
-    if (!req.body.necessity) {
+    } else if (!req.body.necessity) {
       res.status(400);
       res.send('Necessity field is required');
-    }
-    if (!req.body.timestamp) {
+    } else if (!req.body.timestamp) {
       res.status(400);
       res.send('Timestamp field is required');
     } else {
