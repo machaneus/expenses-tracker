@@ -3,32 +3,24 @@ const should = chai.should();
 const sinon = require('sinon');
 
 describe('Expense entry controller tests:', () => {
-  let ExpenseModel;
+  let expenseModel;
   let controller;
   let req;
   let res;
-  let spySave;
-  let spyExpenseModel;
   let spyFind;
 
   beforeEach(() => {
-    spySave = sinon.spy();
-    spyExpenseModel = sinon.spy();
     spyFind = sinon.spy();
 
-    ExpenseModel = function (obj) {
-      spyExpenseModel(obj);
-      this.save = function () {
-        spySave();
-      };
+    expenseModel = {
+      save: sinon.spy(),
+      find: (filter, callback) => {
+        spyFind(filter);
+        callback(null, 'results');
+      }
     };
 
-    ExpenseModel.find = function (filter, callback) {
-      spyFind(filter);
-      callback(null, 'results');
-    };
-
-    controller = require('../../src/controllers/expense')(ExpenseModel);
+    controller = require('../../src/controllers/expense')(expenseModel);
     res = {
       status: sinon.spy(),
       send: sinon.spy(),
@@ -106,8 +98,7 @@ describe('Expense entry controller tests:', () => {
         'timestamp': 1506200350770
       };
       controller.post(req, res);
-      spySave.called.should.equal(true);
-      spyExpenseModel.calledWith(req.body).should.equal(true);
+      expenseModel.save.calledWith(req.body).should.equal(true);
       res.send.calledOnce.should.equal(true);
     });
     it('Should return status 201 on a correct POST', () => {
@@ -138,7 +129,7 @@ describe('Expense entry controller tests:', () => {
       spyArgIsEmpty.should.equal(true, 'filter not empty: ' + spyArg);
     });
     it('Should return status 500 on error', () => {
-      ExpenseModel.find = function (filter, callback) {
+      expenseModel.find = function (filter, callback) {
         spyFind(filter);
         callback(new Error('error'), {});
       };
