@@ -1,0 +1,8 @@
+CREATE TABLE "expense"
+(
+	"id" SERIAL,
+    "value" REAL NOT NULL,
+	"necessity" VARCHAR NOT NULL,
+	"category" VARCHAR NOT NULL,
+	"timestamp" TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'utc')
+);

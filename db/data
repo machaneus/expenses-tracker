@@ -1,0 +1,4 @@
+INSERT INTO expense (value, necessity, category) VALUES (11.34, 'low', 'food');
+INSERT INTO expense (value, necessity, category) VALUES (32.78, 'high', 'house');
+INSERT INTO expense (value, necessity, category) VALUES (1.20, 'high', 'transport');
+INSERT INTO expense (value, necessity, category) VALUES (20.12, 'high', 'gift');
