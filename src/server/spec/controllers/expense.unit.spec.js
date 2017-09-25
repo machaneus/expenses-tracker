@@ -9,20 +9,30 @@ describe('Expense entry controller tests:', () => {
   let res;
   let spySave;
   let spyExpenseModel;
+  let spyFind;
 
   beforeEach(() => {
     spySave = sinon.spy();
     spyExpenseModel = sinon.spy();
+    spyFind = sinon.spy();
+
     ExpenseModel = function (obj) {
       spyExpenseModel(obj);
       this.save = function () {
         spySave();
       };
     };
+
+    ExpenseModel.find = function (filter, callback) {
+      spyFind(filter);
+      callback(null, 'results');
+    };
+
     controller = require('../../src/controllers/expense')(ExpenseModel);
     res = {
       status: sinon.spy(),
-      send: sinon.spy()
+      send: sinon.spy(),
+      json: sinon.spy()
     };
   });
 
@@ -119,8 +129,30 @@ describe('Expense entry controller tests:', () => {
       controller.should.have.property('get');
       controller.post.should.be.a('function');
     });
-    it('Should call .find()');
-    it('Should return status 500 on error');
-    it('Should return the results on success ');
+    it('Should call .find() with {} as filter', () => {
+      req = {};
+      controller.get(req, res);
+      spyFind.calledOnce.should.equal(true, 'Called more than once or never');
+      var spyArg = spyFind.args[0][0];
+      var spyArgIsEmpty = Object.keys(spyArg).length === 0 && spyArg.constructor === Object;
+      spyArgIsEmpty.should.equal(true, 'filter not empty: ' + spyArg);
+    });
+    it('Should return status 500 on error', () => {
+      ExpenseModel.find = function (filter, callback) {
+        spyFind(filter);
+        callback(new Error('error'), {});
+      };
+      req = {};
+      controller.get(req, res);
+      res.status.calledWith(500).should.equal(true, 'Bad Status ' + res.status.args[0][0]);
+      res.send.calledWith('Database error').should.equal(true, 'Bad message ' + res.send.args[0][0]);
+      res.send.calledOnce.should.equal(true);
+    });
+    it('Should return the results on success', () => {
+      req = {};
+      controller.get(req, res);
+      res.json.calledWith('results').should.equal(true, 'Bad json ' + res.json.args[0][0]);
+      res.json.calledOnce.should.equal(true);
+    });
   });
 });

@@ -1,5 +1,5 @@
-function expenseController (ExpenseModel) {
-  let post = function post (req, res) {
+function expenseController(ExpenseModel) {
+  let post = function post(req, res) {
     let expense = new ExpenseModel(req.body);
     if (!req.body.value) {
       res.status(400);
@@ -21,17 +21,19 @@ function expenseController (ExpenseModel) {
   };
 
   let get = function get (req, res) {
-    ExpenseModel.find({}, (err, expenses) => {
-      if (err) {
-        res.status(500);
-        res.send('Database error');
-      } else {
-        res.json(expenses);
-      }
-    });
+    if (!req.body) {
+      ExpenseModel.find({}, (err, expenses) => {
+        if (err) {
+          res.status(500);
+          res.send('Database error');
+        } else {
+          res.json(expenses);
+        }
+      });
+    }
   };
 
-  return {post, get};
+  return { post, get };
 }
 
 module.exports = expenseController;
