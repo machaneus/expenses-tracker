@@ -19,7 +19,7 @@ let expensesModel = (pool) => {
       });
 
       if (whereFilters.length > 0) {
-        queryStr += ' WHERE ' + whereFilters.join(', ');
+        queryStr += ' WHERE ' + whereFilters.join(' AND ');
       }
       console.log(queryStr);
       client.query(queryStr, whereValues, (error, results) => {

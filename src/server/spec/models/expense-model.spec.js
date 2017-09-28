@@ -155,6 +155,31 @@ describe('Expense model tests:', () => {
       clientSpy.args[0][1][0].should.equal(3.16);
       done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
     });
+    it('Should perform a SELECT ... FROM expense WHERE ... AND ...', () => {
+      client.query = (queryStr, values, callback) => {
+        clientSpy(queryStr, values);
+        callback(null, {});
+      };
+
+      let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value>$1 AND category=$2';
+      let filter = {
+        value: { value: 43.62, operator: '>' }, 
+        category: { value: 'house', operator: '=' }
+      };
+
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.find(filter, findCallback);
+
+      clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
+      clientSpy.args[0][1].length.should.equal(2);
+      clientSpy.args[0][1][0].should.equal(43.62);
+      clientSpy.args[0][1][1].should.equal('house');
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
     it('Should return results on succesfull query');
     it('Should call callback with connection error if pool connection fails');
     it('Should call callback with query error if query fails');
