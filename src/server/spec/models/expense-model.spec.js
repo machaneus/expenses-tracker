@@ -30,12 +30,13 @@ describe('Expense model tests:', () => {
       };
 
       let queryStr = 'SELECT value, necessity, category, timestamp FROM expense';
+      let filter = {};
       pool.connect = (callback) => {
         callback(null, client, done);
       };
 
       expenseModel = require('../../src/models/expense-model')(pool);
-      expenseModel.find({}, findCallback);
+      expenseModel.find(filter, findCallback);
 
       clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr ' + clientSpy.args[0][0]);
       clientSpy.args[0][1].length.should.equal(0);
@@ -48,12 +49,15 @@ describe('Expense model tests:', () => {
       };
 
       let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE category=$1';
+      let filter = {
+        category: { value: 'food', operator: '=' }
+      };
       pool.connect = (callback) => {
         callback(null, client, done);
       };
 
       expenseModel = require('../../src/models/expense-model')(pool);
-      expenseModel.find({ category: { value: 'food', operator: '=' } }, findCallback);
+      expenseModel.find(filter, findCallback);
 
       clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
       clientSpy.args[0][1].length.should.equal(1);
@@ -67,12 +71,15 @@ describe('Expense model tests:', () => {
       };
 
       let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE necessity=$1';
+      let filter = {
+        necessity: { value: 'low', operator: '=' }
+      };
       pool.connect = (callback) => {
         callback(null, client, done);
       };
 
       expenseModel = require('../../src/models/expense-model')(pool);
-      expenseModel.find({ necessity: { value: 'low', operator: '=' } }, findCallback);
+      expenseModel.find(filter, findCallback);
 
       clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
       clientSpy.args[0][1].length.should.equal(1);
@@ -86,12 +93,15 @@ describe('Expense model tests:', () => {
       };
 
       let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value=$1';
+      let filter = {
+        value: { value: 38.08, operator: '=' }
+      };
       pool.connect = (callback) => {
         callback(null, client, done);
       };
 
       expenseModel = require('../../src/models/expense-model')(pool);
-      expenseModel.find({ value: { value: 38.08, operator: '=' } }, findCallback);
+      expenseModel.find(filter, findCallback);
 
       clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
       clientSpy.args[0][1].length.should.equal(1);
@@ -105,12 +115,15 @@ describe('Expense model tests:', () => {
       };
 
       let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value<=$1';
+      let filter = {
+        value: { value: 56.91, operator: '<=' }
+      };
       pool.connect = (callback) => {
         callback(null, client, done);
       };
 
       expenseModel = require('../../src/models/expense-model')(pool);
-      expenseModel.find({ value: { value: 56.91, operator: '<=' } }, findCallback);
+      expenseModel.find(filter, findCallback);
 
       clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
       clientSpy.args[0][1].length.should.equal(1);
@@ -124,12 +137,15 @@ describe('Expense model tests:', () => {
       };
 
       let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value<=$1';
+      let filter = {
+        value: { value: 56.91, operator: '<=' }
+      };
       pool.connect = (callback) => {
         callback(null, client, done);
       };
 
       expenseModel = require('../../src/models/expense-model')(pool);
-      expenseModel.find({ value: { value: 56.91, operator: '<=' } }, findCallback);
+      expenseModel.find(filter, findCallback);
 
       clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
       clientSpy.args[0][1].length.should.equal(1);
@@ -143,12 +159,15 @@ describe('Expense model tests:', () => {
       };
 
       let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value>$1';
+      let filter = {
+        value: { value: 3.16, operator: '>' }
+      };
       pool.connect = (callback) => {
         callback(null, client, done);
       };
 
       expenseModel = require('../../src/models/expense-model')(pool);
-      expenseModel.find({ value: { value: 3.16, operator: '>' } }, findCallback);
+      expenseModel.find(filter, findCallback);
 
       clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
       clientSpy.args[0][1].length.should.equal(1);
