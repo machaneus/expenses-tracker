@@ -79,7 +79,82 @@ describe('Expense model tests:', () => {
       clientSpy.args[0][1][0].should.equal('low');
       done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
     });
-    it('Should perform a SELECT ... WHERE value^(=|>|<)$... if value filter and operator is specified');
+    it('Should perform a SELECT ... WHERE value=... if value filter and = operator is specified', () => {
+      client.query = (queryStr, values, callback) => {
+        clientSpy(queryStr, values);
+        callback(null, {});
+      };
+
+      let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value=$1';
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.find({ value: { value: 38.08, operator: '=' } }, findCallback);
+
+      clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
+      clientSpy.args[0][1].length.should.equal(1);
+      clientSpy.args[0][1][0].should.equal(38.08);
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
+    it('Should perform a SELECT ... WHERE value<=... if value filter and <= operator is specified', () => {
+      client.query = (queryStr, values, callback) => {
+        clientSpy(queryStr, values);
+        callback(null, {});
+      };
+
+      let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value<=$1';
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.find({ value: { value: 56.91, operator: '<=' } }, findCallback);
+
+      clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
+      clientSpy.args[0][1].length.should.equal(1);
+      clientSpy.args[0][1][0].should.equal(56.91);
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
+    it('Should perform a SELECT ... WHERE value<=... if value filter and <= operator is specified', () => {
+      client.query = (queryStr, values, callback) => {
+        clientSpy(queryStr, values);
+        callback(null, {});
+      };
+
+      let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value<=$1';
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.find({ value: { value: 56.91, operator: '<=' } }, findCallback);
+
+      clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
+      clientSpy.args[0][1].length.should.equal(1);
+      clientSpy.args[0][1][0].should.equal(56.91);
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
+    it('Should perform a SELECT ... WHERE value>... if value filter and <= operator is specified', () => {
+      client.query = (queryStr, values, callback) => {
+        clientSpy(queryStr, values);
+        callback(null, {});
+      };
+
+      let queryStr = 'SELECT value, necessity, category, timestamp FROM expense WHERE value>$1';
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.find({ value: { value: 3.16, operator: '>' } }, findCallback);
+
+      clientSpy.calledWith(queryStr).should.equal(true, 'Bad queryStr: ' + clientSpy.args[0][0]);
+      clientSpy.args[0][1].length.should.equal(1);
+      clientSpy.args[0][1][0].should.equal(3.16);
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
     it('Should return results on succesfull query');
     it('Should call callback with connection error if pool connection fails');
     it('Should call callback with query error if query fails');
