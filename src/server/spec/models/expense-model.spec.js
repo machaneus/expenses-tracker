@@ -311,7 +311,44 @@ describe('Expense model tests:', () => {
       findCallback.calledWith(null, 'results').should.equal(true, 'findCallback called with ' + findCallback.args[0]);
       done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
     });
-    it('Should call callback with connection error if pool connection fails');
-    it('Should call callback with query error if query fails');
+    it('Should call callback with connection error if pool connection fails', () => {
+      client.query = (queryStr, values, callback) => {
+        let results = 'results';
+        clientSpy(queryStr, values);
+        callback(null, results);
+      };
+
+      let entry = {};
+
+      pool.connect = (callback) => {
+        callback('db not found!', client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.save(entry, findCallback);
+      findCallback.calledOnce.should.equal(true, 'findCallback not called at all or called more than once ');
+      findCallback.args[0][0].message.should.equal('Error on db connection: db not found!', 'findCallback error message: ' + findCallback.args[0][0].message);
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
+    it('Should call callback with query error if query fails', () => {
+      client.query = (queryStr, values, callback) => {
+        let results = 'results';
+        clientSpy(queryStr, values);
+        callback('Syntax Error near ...!', results);
+      };
+
+      let entry = {};
+
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.save(entry, findCallback);
+      findCallback.calledOnce.should.equal(true, 'findCallback not called at all or called more than once ');
+      findCallback.args[0][0].message.should.equal('Error on query: Syntax Error near ...!');
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
+    it('Should sanitize queries');
   });
 });

@@ -36,20 +36,20 @@ let expensesModel = (pool) => {
   let save = (entry, callback) => {
     pool.connect((err, client, done) => {
       if (err) {
-        console.log('PG pool connection error' + err);
-      }
-
-      let queryStr = 'INSERT INTO expense (value, necessity, category) VALUES ($1, $2, $3);';
-      let values = [entry.value, entry.necessity, entry.category];
-      client.query(queryStr, values, (error, results) => {
+        callback(new Error('Error on db connection: ' + err), undefined);
         done();
-        if (error) {
-          console.log(error);
-          callback(new Error(error), undefined);
-        } else {
-          callback(null, results);
-        }
-      });
+      } else {
+        let queryStr = 'INSERT INTO expense (value, necessity, category) VALUES ($1, $2, $3);';
+        let values = [entry.value, entry.necessity, entry.category];
+        client.query(queryStr, values, (error, results) => {
+          done();
+          if (error) {
+            callback(new Error('Error on query: ' + error), undefined);
+          } else {
+            callback(null, results);
+          }
+        });
+      }
     });
   };
 
