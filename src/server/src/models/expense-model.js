@@ -8,28 +8,28 @@ let expensesModel = (pool) => {
     let queryStr = 'SELECT value, necessity, category, timestamp FROM expense';
     pool.connect((err, client, done) => {
       if (err) {
-        callback(new Error('Error on db connection: ' + err), undefined)
-      }
-
-      let whereFilters = [];
-      let whereValues = [];
-      Object.keys(filter).forEach(function (key, index) {
-        whereFilters.push(key + filter[key].operator + '$' + (index + 1));
-        whereValues.push(filter[key].value);
-      });
-
-      if (whereFilters.length > 0) {
-        queryStr += ' WHERE ' + whereFilters.join(' AND ');
-      }
-      console.log(queryStr);
-      client.query(queryStr, whereValues, (error, results) => {
+        callback(new Error('Error on db connection: ' + err), undefined);
         done();
-        if (error) {
-          callback(new Error('Error on query: ' + error), undefined);
-        } else {
-          callback(null, results);
+      } else {
+        let whereFilters = [];
+        let whereValues = [];
+        Object.keys(filter).forEach(function (key, index) {
+          whereFilters.push(key + filter[key].operator + '$' + (index + 1));
+          whereValues.push(filter[key].value);
+        });
+
+        if (whereFilters.length > 0) {
+          queryStr += ' WHERE ' + whereFilters.join(' AND ');
         }
-      });
+        client.query(queryStr, whereValues, (error, results) => {
+          done();
+          if (error) {
+            callback(new Error('Error on query: ' + error), undefined);
+          } else {
+            callback(null, results);
+          }
+        });
+      }
     });
   };
 
