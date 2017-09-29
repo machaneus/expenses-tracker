@@ -261,8 +261,56 @@ describe('Expense model tests:', () => {
   });
 
   describe('Expense model save', () => {
-    it('Should perform an INSERT query with the specified entry');
-    it('Should return results on succesfull query');
+    it('Should perform an INSERT query with the specified entry', () => {
+      client.query = (queryStr, values, callback) => {
+        let results = 'results';
+        clientSpy(queryStr, values);
+        callback(null, results);
+      };
+      let queryStr = 'INSERT INTO expense (value, necessity, category) VALUES ($1, $2, $3);';
+      let entry = {
+        value: 98.65,
+        necessity: 'low',
+        category: 'transportation'
+      };
+
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.save(entry, findCallback);
+      clientSpy.callCount.should.equal(1);
+      clientSpy.args[0][0].should.equal(queryStr);
+      clientSpy.args[0][1][0].should.equal(98.65);
+      clientSpy.args[0][1][1].should.equal('low');
+      clientSpy.args[0][1][2].should.equal('transportation');
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
+    it('Should return results on succesfull query', () => {
+      client.query = (queryStr, values, callback) => {
+        let results = 'results';
+        clientSpy(queryStr, values);
+        callback(null, results);
+      };
+
+      let entry = {
+        value: 98.65,
+        necessity: 'low',
+        category: 'transportation'
+      };
+
+      pool.connect = (callback) => {
+        callback(null, client, done);
+      };
+
+      expenseModel = require('../../src/models/expense-model')(pool);
+      expenseModel.save(entry, findCallback);
+
+      findCallback.calledOnce.should.equal(true, 'findCallback not called at all or called more than once ');
+      findCallback.calledWith(null, 'results').should.equal(true, 'findCallback called with ' + findCallback.args[0]);
+      done.calledOnce.should.equal(true, 'Done not called at all or called more than once ');
+    });
     it('Should call callback with connection error if pool connection fails');
     it('Should call callback with query error if query fails');
   });
